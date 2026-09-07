@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="p-5 mb-4 bg-white rounded-3 shadow-sm border text-center">
+    <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold text-primary">Бронируйте рабочее место в пару кликов</h1>
+        <p class="col-md-8 mx-auto fs-4 text-muted">
+            Наш коворкинг — это пространство для продуктивной работы. Веб-интерфейс позволяет быстро выбрать место, проверить доступные даты и управлять своими бронированиями.
+        </p>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mt-4">
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-4 gap-3">Начать работу</a>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary btn-lg px-4">У меня есть аккаунт</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

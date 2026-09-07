@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h3>Добро пожаловать, <span class="text-primary">{{ current_user.username }}</span>!</h3>
+        <p class="text-muted">Что вы хотите сделать сегодня?</p>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm card-stats border-primary border-0 border-top border-4">
+            <div class="card-body text-center">
+                <div class="display-6 mb-2 text-primary"><i class="fas fa-plus-circle"></i></div>
+                <h5 class="card-title">Новая бронь</h5>
+                <p class="card-text text-muted">Занять место в офисе на выбранные даты.</p>
+                <a href="{{ url_for('bookings.new_booking') }}" class="btn btn-primary w-100">Забронировать</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm card-stats border-info border-0 border-top border-4">
+            <div class="card-body text-center">
+                <div class="display-6 mb-2 text-info"><i class="fas fa-list-ul"></i></div>
+                <h5 class="card-title">Мои места</h5>
+                <p class="card-text text-muted">Посмотреть текущие и прошлые бронирования.</p>
+                <a href="{{ url_for('bookings.my_bookings') }}" class="btn btn-info text-white w-100">Список броней</a>
+            </div>
+        </div>
+    </div>
+    {% if current_user.is_admin %}
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm card-stats border-warning border-0 border-top border-4">
+            <div class="card-body text-center">
+                <div class="display-6 mb-2 text-warning"><i class="fas fa-tools"></i></div>
+                <h5 class="card-title">Управление</h5>
+                <p class="card-text text-muted">Добавить места или посмотреть логи системы.</p>
+                <a href="{{ url_for('admin.statistics') }}" class="btn btn-warning text-white w-100">Админка</a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white font-weight-bold">Ваши недавние записи</div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Место</th>
+                        <th>Дата начала</th>
+                        <th>Дата окончания</th>
+                        <th>Статус</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in last_bookings %}
+                    <tr>
+                        <td>{{ booking.workplace.name }}</td>
+                        <td>{{ booking.start_date.strftime('%d.%m.%Y') }}</td>
+                        <td>{{ booking.end_date.strftime('%d.%m.%Y') }}</td>
+                        <td><span class="badge bg-success">Активно</span></td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center py-4 text-muted">У вас пока нет бронирований</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

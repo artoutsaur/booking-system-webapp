@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h2><i class="fas fa-chart-line text-primary me-2"></i>Панель управления</h2>
+    </div>
+    <div class="col-md-6 text-end">
+        <a href="{{ url_for('admin.logs') }}" class="btn btn-outline-dark"><i class="fas fa-list-alt"></i> Логи системы</a>
+        <a href="{{ url_for('workplaces.manage') }}" class="btn btn-outline-primary"><i class="fas fa-desktop"></i> Управление местами</a>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card bg-primary text-white shadow-sm border-0">
+            <div class="card-body">
+                <h6>Всего пользователей</h6>
+                <h2 class="mb-0">{{ stats.users_count }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-success text-white shadow-sm border-0">
+            <div class="card-body">
+                <h6>Активных броней</h6>
+                <h2 class="mb-0">{{ stats.bookings_count }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-info text-white shadow-sm border-0">
+            <div class="card-body">
+                <h6>Рабочих мест</h6>
+                <h2 class="mb-0">{{ stats.workplaces_count }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white">Топ-5 популярных мест</div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    {% for name, total in popular %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ name }}
+                        <span class="badge bg-primary rounded-pill">{{ total }} броней</span>
+                    </li>
+                    {% else %}
+                    <li class="list-group-item text-muted">Нет данных</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white">Последние записи в системе</div>
+            <div class="card-body p-0">
+                <table class="table table-sm table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Пользователь</th>
+                            <th>Место</th>
+                            <th>Даты</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for b in recent %}
+                        <tr>
+                            <td>{{ b.user.username }}</td>
+                            <td>{{ b.workplace.name }}</td>
+                            <td class="small">{{ b.start_date.strftime('%d.%m') }} - {{ b.end_date.strftime('%d.%m') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <i class="fas fa-trash-alt text-danger me-2"></i> Управление бронированиями (админ)
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Пользователь</th>
+                                <th>Место</th>
+                                <th>Период</th>
+                                <th>Создано</th>
+                                <th class="text-end">Действие</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in all_bookings %}
+                            <tr>
+                                <td>#{{ booking.id }}</td>
+                                <td>{{ booking.user.username }}</td>
+                                <td>{{ booking.workplace.name }}</td>
+                                <td>{{ booking.start_date.strftime('%d.%m.%Y') }} → {{ booking.end_date.strftime('%d.%m.%Y') }}</td>
+                                <td class="small">{{ booking.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                                <td class="text-end">
+                                    <form action="{{ url_for('bookings.cancel', id=booking.id) }}" method="POST" 
+                                          onsubmit="return confirm('Удалить бронь пользователя {{ booking.user.username }}?')">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash-alt"></i> Удалить
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-muted">Нет бронирований</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

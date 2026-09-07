@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">Новое бронирование</div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Выберите рабочее место</label>
+                        <select name="workplace_id" class="form-select" required>
+                            <option value="">-- Выберите из списка --</option>
+                            {% for wp in workplaces %}
+                            <option value="{{ wp.id }}" {% if wp.id == selected_wp %}selected{% endif %}>
+                                {{ wp.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Дата начала</label>
+                            <input type="date" name="start_date" class="form-control" min="{{ date_today }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Дата окончания</label>
+                            <input type="date" name="end_date" class="form-control" required>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">Забронировать</button>
+                        <a href="{{ url_for('workplaces.list_workplaces') }}" class="btn btn-light">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

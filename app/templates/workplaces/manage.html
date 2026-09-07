@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">Добавить новое место</div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Название/Номер места</label>
+                        <input type="text" name="name" class="form-control" placeholder="Напр: Окно 1 или Стол А2" required>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Сохранить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">Список всех рабочих мест</div>
+            <div class="card-body p-0">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Название</th>
+                            <th>Броней</th>
+                            <th class="text-end">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for wp in workplaces %}
+                        <tr>
+                            <td>{{ wp.id }}</td>
+                            <td><strong>{{ wp.name }}</strong></td>
+                            <td><span class="badge bg-info">{{ wp.bookings.count() }}</span></td>
+                            <td class="text-end">
+                                <form action="{{ url_for('workplaces.delete', id=wp.id) }}" method="POST" style="display:inline;">
+                                    {% if wp.bookings.count() > 0 %}
+                                        <input type="hidden" name="force" value="true">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('На это место есть бронирования! Вы уверены, что хотите удалить его ПРИНУДИТЕЛЬНО?')">
+                                            Удалить (Force)
+                                        </button>
+                                    {% else %}
+                                        <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                                    {% endif %}
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
